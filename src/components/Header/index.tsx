@@ -2,11 +2,15 @@ import { Header } from './styles';
 import SearchBar from './../SearchBar';
 import HeadingGroup from './../HeadingGroup';
 
-const HeaderComponent = () => {
+type HeaderProps = {
+  getFruit: (fruitName: string) => void;
+}
+
+const HeaderComponent = ({ getFruit }: HeaderProps) => {
   return (
     <Header>
       <HeadingGroup style={{ alignSelf: 'center' }} />
-      <SearchBar />
+      <SearchBar getFruit={getFruit} />
     </Header>
   );
 }

@@ -8,7 +8,7 @@ const Home = () => {
     <Container>
       <HeadingGroup />
 
-      <Anchor to="/fruit">
+      <Anchor to="/nutritional-table">
         <AnchorText>Clique aqui para começar</AnchorText>
         <Icon src={AnglesRightSolid} alt="Avançar" />
       </Anchor>

@@ -8,7 +8,7 @@ const routes: RouteObject[] = [
     element: <HomeScreen />
   },
   {
-    path: '/fruit',
+    path: '/nutritional-table',
     element: <FruitScreen />
   }
 ];

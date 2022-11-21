@@ -7,21 +7,21 @@ type UserContextType = {
   isCarbohydratesChecked: boolean;
   isFatChecked: boolean;
   isSugarChecked: boolean;
-  setIsAllChecked: (all: boolean) => void;
-  setIsCaloriesChecked: (calories: boolean) => void;
-  setIsProteinsChecked: (proteins: boolean) => void;
-  setIsCarbohydratesChecked: (carbohydrates: boolean) => void;
-  setIsFatChecked: (fat: boolean) => void;
-  setIsSugarChecked: (sugar: boolean) => void;
+  setIsAllChecked: (isAllChecked: boolean) => void;
+  setIsCaloriesChecked: (isCaloriesChecked: boolean) => void;
+  setIsProteinsChecked: (isProteinsChecked: boolean) => void;
+  setIsCarbohydratesChecked: (isCarbohydratesChecked: boolean) => void;
+  setIsFatChecked: (isFatChecked: boolean) => void;
+  setIsSugarChecked: (isSugarChecked: boolean) => void;
 }
 
 const initialValue: UserContextType = {
-  isAllChecked: false,
-  isCaloriesChecked: false,
-  isProteinsChecked: false,
-  isCarbohydratesChecked: false,
-  isFatChecked: false,
-  isSugarChecked: false,
+  isAllChecked: true,
+  isCaloriesChecked: true,
+  isProteinsChecked: true,
+  isCarbohydratesChecked: true,
+  isFatChecked: true,
+  isSugarChecked: true,
   setIsAllChecked: () => {},
   setIsCaloriesChecked: () => {},
   setIsProteinsChecked: () => {},

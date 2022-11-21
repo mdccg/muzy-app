@@ -1,21 +1,21 @@
+import { Form, Input, Button, MagnifyingGlass, SearchBar, Checkboxes, CheckboxBox, Checkbox, Check, CheckboxLabel } from './styles';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../context/UserContext';
-import { Form, Input, Button, MagnifyingGlass, SearchBar, Checkboxes, CheckboxBox, Checkbox, Check, CheckboxLabel } from './styles';
-import MagnifyingGlassSolid from './../../assets/icons/magnifying-glass-solid.svg';
 import CheckSolid from './../../assets/icons/check-solid.svg';
-
-type FilterOptionType = {
-  label: string;
-  isChecked: boolean;
-  setIsChecked: (value: boolean) => void;
-}
+import { FilterOptionType } from './../../types/FilterOptionType';
+import MagnifyingGlassSolid from './../../assets/icons/magnifying-glass-solid.svg';
+import { sanitizeSearchedFruitName, verifyIfStringIsEmpty } from '../../utils/string_utils';
 
 type CheckboxProps = {
   filterOptions: FilterOptionType[];
   filterOption: FilterOptionType;
   handleClick?: () => void;
   handleKeyUp?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-  index: number;
+  tabIndex: number;
+}
+
+type SearchBarProps = {
+  getFruit: (fruitName: string) => void;
 }
 
 const CheckboxComponent = ({ filterOptions, filterOption: { label, isChecked, setIsChecked }, ...props }: CheckboxProps) => {
@@ -52,7 +52,7 @@ const CheckboxComponent = ({ filterOptions, filterOption: { label, isChecked, se
     <CheckboxBox
       onKeyUp={props.handleKeyUp || handleKeyUp}
       onClick={props.handleClick || handleClick}
-      tabIndex={props.index}>
+      tabIndex={props.tabIndex}>
       <Checkbox>
         {isChecked && <Check src={CheckSolid} alt={`Opção ${label} marcada`} />}
       </Checkbox>
@@ -62,17 +62,12 @@ const CheckboxComponent = ({ filterOptions, filterOption: { label, isChecked, se
   );
 }
 
-const SearchBarComponent = () => {
-  const [fruitName, setFruitName] = useState<string>('');
+const SearchBarComponent = ({ getFruit }: SearchBarProps) => {
   const { isAllChecked, isCaloriesChecked, isProteinsChecked, isCarbohydratesChecked, isFatChecked, isSugarChecked, setIsAllChecked, setIsCaloriesChecked, setIsProteinsChecked, setIsCarbohydratesChecked, setIsFatChecked, setIsSugarChecked } = useContext(UserContext);
-  const filterOptions: FilterOptionType[] = [
-    { label: 'Todas',        isChecked: isAllChecked,           setIsChecked: setIsAllChecked },
-    { label: 'Calorias',     isChecked: isCaloriesChecked,      setIsChecked: setIsCaloriesChecked },
-    { label: 'Proteínas',    isChecked: isProteinsChecked,      setIsChecked: setIsProteinsChecked },
-    { label: 'Carboidratos', isChecked: isCarbohydratesChecked, setIsChecked: setIsCarbohydratesChecked },
-    { label: 'Gorduras',     isChecked: isFatChecked,           setIsChecked: setIsFatChecked },
-    { label: 'Açúcares',     isChecked: isSugarChecked,         setIsChecked: setIsSugarChecked }
-  ];
+  const [fruitName, setFruitName] = useState<string>('');
+  const [filterOptions, setFilterOptions] = useState<FilterOptionType[]>([
+    { label: 'Todas', isChecked: isAllChecked, setIsChecked: setIsAllChecked }
+  ]);
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === ' ') {
@@ -86,18 +81,35 @@ const SearchBarComponent = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const sanitizedFruitName = sanitizeSearchedFruitName(fruitName);
+    const isSanitizedFruitNameEmpty = verifyIfStringIsEmpty(sanitizedFruitName);
+    if (isSanitizedFruitNameEmpty) return;
+    getFruit(sanitizedFruitName);
   }
+
+  useEffect(() => {
+    setFilterOptions([
+      { label: 'Todas',        isChecked: isAllChecked,           setIsChecked: setIsAllChecked },
+      { label: 'Calorias',     isChecked: isCaloriesChecked,      setIsChecked: setIsCaloriesChecked },
+      { label: 'Proteínas',    isChecked: isProteinsChecked,      setIsChecked: setIsProteinsChecked },
+      { label: 'Carboidratos', isChecked: isCarbohydratesChecked, setIsChecked: setIsCarbohydratesChecked },
+      { label: 'Gorduras',     isChecked: isFatChecked,           setIsChecked: setIsFatChecked },
+      { label: 'Açúcares',     isChecked: isSugarChecked,         setIsChecked: setIsSugarChecked }
+    ]);
+  }, [isAllChecked, isCaloriesChecked, isProteinsChecked, isCarbohydratesChecked, isFatChecked, isSugarChecked, setIsAllChecked, setIsCaloriesChecked, setIsProteinsChecked, setIsCarbohydratesChecked, setIsFatChecked, setIsSugarChecked]);
 
   return (
     <>
       <SearchBar>
         <Form onSubmit={handleSubmit}>
           <Input
+            name="fruit"
             value={fruitName}
             onChange={(event) => setFruitName(event.target.value)}
-            placeholder="Digite o nome de uma fruta" />
+            placeholder="Digite o nome de uma fruta"
+            tabIndex={2} />
           
-          <Button>
+          <Button tabIndex={3}>
             <MagnifyingGlass
               src={MagnifyingGlassSolid}
               alt="Pressione Enter para pesquisar ou pressione Tab para editar" />
@@ -106,7 +118,7 @@ const SearchBarComponent = () => {
 
         <Checkboxes>
           <CheckboxComponent
-            index={0}
+            tabIndex={4}
             handleClick={handleClick}
             handleKeyUp={handleKeyUp}
             filterOptions={filterOptions}
@@ -116,7 +128,7 @@ const SearchBarComponent = () => {
             <CheckboxComponent
               filterOptions={filterOptions}
               filterOption={value}
-              index={index + 1}
+              tabIndex={index + 5}
               key={index} />
           ))}
         </Checkboxes>
